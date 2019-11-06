@@ -145,7 +145,7 @@ public class SSLNetworkModule extends TCPNetworkModule {
 				SSLParameters sslParams = new SSLParameters();
 				sslParams.setEndpointIdentificationAlgorithm("HTTPS");
 				((SSLSocket) socket).setSSLParameters(sslParams);
-			} catch(NoSuchMethodError e) {
+			} catch (Exception | Error e) {
 				// Android < 7.0
 			}
 		}
