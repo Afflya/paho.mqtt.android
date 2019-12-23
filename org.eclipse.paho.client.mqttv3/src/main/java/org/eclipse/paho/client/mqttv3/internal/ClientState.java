@@ -761,14 +761,14 @@ public class ClientState {
                 //    This would be the case when receiving a large message;                                                                                                                                                  
                 //    the broker needs to keep receiving a regular ping even if the ping response are queued after the long message                                                                                           
                 //    If lacking to do so, the broker will consider my connection lost and cut my socket.                                                                                                                     
-                if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive - delta)) ||
-                    (time - lastOutboundActivity >= keepAlive - delta)) {
-
-                    //@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}                                                                                                              
+//                if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive - delta)) ||
+//                    (time - lastOutboundActivity >= keepAlive - delta)) {
+//
+                    //@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}
                     log.fine(CLASS_NAME,methodName,"620", new Object[]{ Long.valueOf(this.keepAlive), Long.valueOf(lastOutboundActivity), Long.valueOf(lastInboundActivity)});
 
-                    // pingOutstanding++;  // it will be set after the ping has been written on the wire                                                                                                             
-                    // lastPing = time;    // it will be set after the ping has been written on the wire                                                                                                             
+                    // pingOutstanding++;  // it will be set after the ping has been written on the wire
+                    // lastPing = time;    // it will be set after the ping has been written on the wire
                     token = new MqttToken(clientComms.getClient().getClientId());
                     if(pingCallback != null){
                     	token.setActionCallback(pingCallback);
@@ -778,14 +778,14 @@ public class ClientState {
 
                     nextPingTime = getKeepAlive();
 
-                    //Wake sender thread since it may be in wait state (in ClientState.get())                                                                                                                             
+                    //Wake sender thread since it may be in wait state (in ClientState.get())
                     notifyQueueLock();
-                }
-                else {
-                		//@TRACE 634=ping not needed yet. Schedule next ping.
-                    log.fine(CLASS_NAME, methodName, "634", null);
-                    nextPingTime = Math.max(1,  getKeepAlive() - (time - lastOutboundActivity));
-                }
+//                }
+//                else {
+//                		//@TRACE 634=ping not needed yet. Schedule next ping.
+//                    log.fine(CLASS_NAME, methodName, "634", null);
+//                    nextPingTime = Math.max(1,  getKeepAlive() - (time - lastOutboundActivity));
+//                }
             }
             //@TRACE 624=Schedule next ping at {0}                                                                                                                                                                                
             log.fine(CLASS_NAME, methodName,"624", new Object[]{Long.valueOf(nextPingTime)});
