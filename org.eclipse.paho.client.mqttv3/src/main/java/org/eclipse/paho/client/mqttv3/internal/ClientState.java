@@ -21,13 +21,6 @@
  */
 package org.eclipse.paho.client.mqttv3.internal;
 
-import java.io.EOFException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
@@ -55,6 +48,13 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttUnsubscribe;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.eclipse.paho.client.mqttv3.logging.Logger;
 import org.eclipse.paho.client.mqttv3.logging.LoggerFactory;
+
+import java.io.EOFException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The core of the client, which holds the state information for pending and
@@ -767,10 +767,10 @@ public class ClientState {
                 //    This would be the case when receiving a large message;                                                                                                                                                  
                 //    the broker needs to keep receiving a regular ping even if the ping response are queued after the long message                                                                                           
                 //    If lacking to do so, the broker will consider my connection lost and cut my socket.                                                                                                                     
-                if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAliveNanos - delta)) ||
-                    (time - lastOutboundActivity >= keepAliveNanos - delta)) {
+//                if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAliveNanos - delta)) ||
+//                    (time - lastOutboundActivity >= keepAliveNanos - delta)) {
 
-                    //@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}                                                                                                              
+                    //@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}
                     log.fine(CLASS_NAME,methodName,"620", new Object[]{ Long.valueOf(this.keepAliveNanos), Long.valueOf(lastOutboundActivity), Long.valueOf(lastInboundActivity)});
 
                     // pingOutstanding++;  // it will be set after the ping has been written on the wire                                                                                                             
@@ -786,14 +786,14 @@ public class ClientState {
 
                     //Wake sender thread since it may be in wait state (in ClientState.get())                                                                                                                             
                     notifyQueueLock();
-                }
-                else {
-                		//@TRACE 634=ping not needed yet. Schedule next ping.
-                    log.fine(CLASS_NAME, methodName, "634", null);
-                    long elapsedSinceLastActivityNanos = time - lastOutboundActivity;
-                    long elapsedSinceLastActivityMillis = TimeUnit.NANOSECONDS.toMillis( elapsedSinceLastActivityNanos );
-                    nextPingTime = Math.max(1,  getKeepAlive() - elapsedSinceLastActivityMillis);
-                }
+//                }
+//                else {
+//                		//@TRACE 634=ping not needed yet. Schedule next ping.
+//                    log.fine(CLASS_NAME, methodName, "634", null);
+//                    long elapsedSinceLastActivityNanos = time - lastOutboundActivity;
+//                    long elapsedSinceLastActivityMillis = TimeUnit.NANOSECONDS.toMillis( elapsedSinceLastActivityNanos );
+//                    nextPingTime = Math.max(1,  getKeepAlive() - elapsedSinceLastActivityMillis);
+//                }
             }
             //@TRACE 624=Schedule next ping at {0}                                                                                                                                                                                
             log.fine(CLASS_NAME, methodName,"624", new Object[]{Long.valueOf(nextPingTime)});
