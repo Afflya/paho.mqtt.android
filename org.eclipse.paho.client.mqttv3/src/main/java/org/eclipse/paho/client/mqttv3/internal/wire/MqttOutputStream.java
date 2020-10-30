@@ -15,14 +15,17 @@
  */
 package org.eclipse.paho.client.mqttv3.internal.wire;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.internal.ClientState;
 import org.eclipse.paho.client.mqttv3.logging.Logger;
 import org.eclipse.paho.client.mqttv3.logging.LoggerFactory;
+
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -35,7 +38,9 @@ public class MqttOutputStream extends OutputStream {
 
 	private ClientState clientState = null;
 	private BufferedOutputStream out;
-	
+
+	private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
 	public MqttOutputStream(ClientState clientState, OutputStream out) {
 		this.clientState = clientState;
 		this.out = new BufferedOutputStream(out);
@@ -46,7 +51,16 @@ public class MqttOutputStream extends OutputStream {
 	}
 	
 	public void flush() throws IOException {
-		out.flush();
+		executor.schedule(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}, 10, TimeUnit.MILLISECONDS);
 	}
 	
 	public void write(byte[] b) throws IOException {
