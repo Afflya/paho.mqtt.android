@@ -117,8 +117,8 @@ public class MqttDataTypes {
 	 *             the data to the stream.
 	 */
 	public static void encodeUTF8(DataOutputStream dos, String stringToEncode) throws MqttException {
-		validateUTF8String(stringToEncode);
 		try {
+			validateUTF8String(stringToEncode);
 			byte[] encodedString = stringToEncode.getBytes(STRING_ENCODING);
 			byte byte1 = (byte) ((encodedString.length >>> 8) & 0xFF);
 			byte byte2 = (byte) ((encodedString.length >>> 0) & 0xFF);
@@ -126,7 +126,7 @@ public class MqttDataTypes {
 			dos.write(byte1);
 			dos.write(byte2);
 			dos.write(encodedString);
-		} catch (IOException ex) {
+		} catch (IOException | IllegalArgumentException ex) {
 			throw new MqttException(ex);
 		}
 	}

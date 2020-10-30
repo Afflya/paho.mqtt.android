@@ -15,20 +15,19 @@
  */
 package org.eclipse.paho.client.mqttv3.internal.wire;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttPersistable;
+import org.eclipse.paho.client.mqttv3.MqttToken;
+import org.eclipse.paho.client.mqttv3.internal.ExceptionHelper;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttPersistable;
-import org.eclipse.paho.client.mqttv3.MqttToken;
-import org.eclipse.paho.client.mqttv3.internal.ExceptionHelper;
 
 /**
  * An on-the-wire representation of an MQTT message.
@@ -324,9 +323,8 @@ public abstract class MqttWireMessage {
 	 *             the data to the stream
 	 */
 	public static void encodeUTF8(DataOutputStream dos, String stringToEncode) throws MqttException {
-		validateUTF8String(stringToEncode);
 		try {
-
+			validateUTF8String(stringToEncode);
 			byte[] encodedString = stringToEncode.getBytes(STRING_ENCODING);
 			byte byte1 = (byte) ((encodedString.length >>> 8) & 0xFF);
 			byte byte2 = (byte) ((encodedString.length >>> 0) & 0xFF);
@@ -334,9 +332,7 @@ public abstract class MqttWireMessage {
 			dos.write(byte1);
 			dos.write(byte2);
 			dos.write(encodedString);
-		} catch (UnsupportedEncodingException ex) {
-			throw new MqttException(ex);
-		} catch (IOException ex) {
+		} catch (IllegalArgumentException | IOException ex) {
 			throw new MqttException(ex);
 		}
 	}
@@ -365,7 +361,7 @@ public abstract class MqttWireMessage {
 			validateUTF8String(output);
 
 			return output;
-		} catch (IOException ex) {
+		} catch (IOException | IllegalArgumentException ex) {
 			throw new MqttException(ex);
 		}
 	}
