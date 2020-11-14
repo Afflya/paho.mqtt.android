@@ -351,6 +351,10 @@ public abstract class MqttWireMessage {
 	 *             or decoding the encoded string.
 	 */
 	public static String decodeUTF8(DataInputStream input) throws MqttException {
+		return decodeUTF8(input, true);
+	}
+
+	public static String decodeUTF8(DataInputStream input, boolean validate) throws MqttException {
 		int encodedLength;
 		try {
 			encodedLength = input.readUnsignedShort();
@@ -358,7 +362,9 @@ public abstract class MqttWireMessage {
 			byte[] encodedString = new byte[encodedLength];
 			input.readFully(encodedString);
 			String output = new String(encodedString, STRING_ENCODING);
-			validateUTF8String(output);
+			if (validate) {
+				validateUTF8String(output);
+			}
 
 			return output;
 		} catch (IOException | IllegalArgumentException ex) {
@@ -373,7 +379,7 @@ public abstract class MqttWireMessage {
 	 *            - The Input String
 	 * @throws IllegalArgumentException
 	 */
-	private static void validateUTF8String(String input) throws IllegalArgumentException {
+	public static void validateUTF8String(String input) throws IllegalArgumentException {
 		for (int i = 0; i < input.length(); i++) {
 			boolean isBad = false;
 			char c = input.charAt(i);

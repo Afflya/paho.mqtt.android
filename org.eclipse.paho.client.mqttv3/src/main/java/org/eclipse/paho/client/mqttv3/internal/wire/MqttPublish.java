@@ -61,7 +61,7 @@ public class MqttPublish extends MqttPersistableWireMessage {
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
 		CountingInputStream counter = new CountingInputStream(bais);
 		DataInputStream dis = new DataInputStream(counter);
-		topicName = decodeUTF8(dis);
+		topicName = decodeUTF8(dis, false);
 		if (message.getQos() > 0) {
 			msgId = dis.readUnsignedShort();
 		}
